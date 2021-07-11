@@ -2,7 +2,7 @@
 var formEl = document.querySelector("#task-form");
 var tasksToDoEl = document.querySelector("#tasks-to-do"); // Selects the element in the DOM that represents the unordered task list 
 var taskIdCounter = 0;  // Will create a unique ID for each task 
-
+var pageContentEl = document.querySelector("#page-content"); 
 // Handler function that creates a new task list-item
 
 var taskFormHandler = function (event) {
@@ -45,7 +45,7 @@ var createTaskEl = function(taskDataObj) {
     var taskActionsEl = createTaskActions(taskIdCounter); 
     taskItemEl.appendChild(taskActionsEl); 
     tasksToDoEl.appendChild(taskItemEl); // Adds newly created task item list element to unordered list in the HTML
-    taskIDCounter++; // Incremenets counter to assure unique data-task-id for each list item
+    taskIdCounter++; // Incremenets counter to assure unique data-task-id for each list item
 }
 
 var createTaskActions = function(taskId) {
@@ -92,5 +92,48 @@ var createTaskActions = function(taskId) {
 
 // Event listener that will callback the createTaskHandler function on a 'submit' can also be called 'onsubmit'. This event looks for either clicking a button named 'submit' or if the user hits the enter-key 
 formEl.addEventListener("submit", taskFormHandler); 
+
+var deleteTask = function(taskId) {
+    // Selects the task that is associated with the clicked delete button, linked by the data-task-id attribute 
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+    console.log(taskSelected);
+    // Removes entire list item 
+    taskSelected.remove();  
+}
+
+var editTask = function(taskId) {
+    console.log("Editing task #" + taskId); 
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+
+    // Get task name and type from the selected task object 
+    var taskName = taskSelected.querySelector("h3.task-name").textContent;
+    var taskType = taskSelected.querySelector("span.task-type").textContent;
+    // Set the selected task name and type into the form box 
+    document.querySelector("input[name='task-name']").value = taskName; 
+    document.querySelector("select[name='task-type']").value = taskType;
+    // Change submit button text to 'save' so user knows value is being editted
+    document.querySelector("#save-task").textContent = "Save Task"; 
+    // Assign taskId to the entire form group so we know which task is being editted
+    formEl.setAttribute("data-task-id", taskId); 
+    console.log(formEl); 
+}
+
+var taskButtonHandler = function(event) {
+    // Log will display the target of the click 
+    console.log(event.target); 
+    // If the target has the class 'delete-btn' a delete button was clicked
+    if (event.target.matches(".delete-btn")) {
+        // Grabs data-task-id of the button which relates to the entire task
+        var taskId = event.target.getAttribute("data-task-id");
+        deleteTask(taskId); 
+    }
+    // If the target has the class 'edit-btn' a delete button was clicked
+    if (event.target.matches(".edit-btn")) {
+        var taskId = event.target.getAttribute("data-task-id");
+        editTask(taskId); 
+    }
+}
+
+pageContentEl.addEventListener("click", taskButtonHandler); 
 
 
