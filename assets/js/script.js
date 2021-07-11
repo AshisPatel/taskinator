@@ -1,6 +1,9 @@
 // Using the 'El' suffix marks this as a DOM element 
 var formEl = document.querySelector("#task-form");
-var tasksToDoEl = document.querySelector("#tasks-to-do"); // Selects the element in the DOM that represents the unordered task list 
+// Selects each onrdered list 
+var tasksToDoEl = document.querySelector("#tasks-to-do"); 
+var tasksInProgressEl = document.querySelector("#tasks-in-progress");
+var tasksCompletedEl = document.querySelector("#tasks-completed"); 
 var taskIdCounter = 0;  // Will create a unique ID for each task 
 var pageContentEl = document.querySelector("#page-content");
 // Handler function that creates a new task list-item
@@ -115,10 +118,6 @@ var createTaskActions = function (taskId) {
     return actionContainerEl;
 }
 
-
-// Event listener that will callback the createTaskHandler function on a 'submit' can also be called 'onsubmit'. This event looks for either clicking a button named 'submit' or if the user hits the enter-key 
-formEl.addEventListener("submit", taskFormHandler);
-
 var deleteTask = function (taskId) {
     // Selects the task that is associated with the clicked delete button, linked by the data-task-id attribute 
     var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
@@ -158,6 +157,35 @@ var taskButtonHandler = function (event) {
     }
 }
 
+var taskStatusChangeHandler = function (event) {
+    console.log(event.target); 
+    // Gets the id of task where the select was clicked
+    var taskId = event.target.getAttribute("data-task-id"); 
+    // Gets the currently selected option's value and makes it lower case
+    var statusValue = event.target.value.toLowerCase(); 
+    // Finds the parent task item element based on the id 
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+
+    // Depending on the select value, the task (list item) is appened to the appropraite column 
+    if (statusValue === "to do") {
+        tasksToDoEl.appendChild(taskSelected);
+    }
+
+    else if (statusValue === "in progress") {
+        tasksInProgressEl.appendChild(taskSelected);
+    }
+
+    else if (statusValue === "complete") {
+        tasksCompletedEl.appendChild(taskSelected);
+    }
+}
+
+// Event listener that will callback the createTaskHandler function on a 'submit' can also be called 'onsubmit'. This event looks for either clicking a button named 'submit' or if the user hits the enter-key 
+formEl.addEventListener("submit", taskFormHandler);
+
+// Listens for when an edit or delete button is clicked in one of the tasks columns
 pageContentEl.addEventListener("click", taskButtonHandler);
 
+// Listens for when there is a change 
+pageContentEl.addEventListener("change", taskStatusChangeHandler);
 
