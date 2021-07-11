@@ -65,6 +65,9 @@ var completeEditTask = function(taskName, taskType, taskId) {
        }
    }
 
+   // Save new tasks array in local storage 
+   saveTasks(); 
+
     // Reset form by removing attribute and reverting submit button
     formEl.removeAttribute("data-task-id");
     document.querySelector("#save-task").textContent = "Add Task"; 
@@ -86,11 +89,12 @@ var createTaskEl = function (taskDataObj) {
     // Add taskId to the taskDataObj to store it 
     taskDataObj.id = taskIdCounter;
     tasks.push(taskDataObj); 
+    // Save new task in localStorage
+    saveTasks(); 
     // Incremenets counter to assure unique data-task-id for each list item
     taskIdCounter++;
 
-    console.log(taskDataObj);
-    console.log(taskDataObj.status); 
+    
 }
 
 var createTaskActions = function (taskId) {
@@ -154,6 +158,8 @@ var deleteTask = function (taskId) {
 
     // Update tasks array by setting it equal to the updatedTaskArr
     tasks = updatedTaskArr; 
+    // Save new tasks array in local storage
+    saveTasks();
 }
 
 var editTask = function (taskId) {
@@ -188,7 +194,6 @@ var taskButtonHandler = function (event) {
 }
 
 var taskStatusChangeHandler = function (event) {
-    console.log(event.target); 
     // Gets the id of task where the select was clicked
     var taskId = event.target.getAttribute("data-task-id"); 
     // Gets the currently selected option's value and makes it lower case
@@ -215,6 +220,14 @@ var taskStatusChangeHandler = function (event) {
             tasks[i].status = statusValue; 
         }
     }
+
+    // Save new tasks array in local storage 
+    saveTasks(); 
+}
+
+// Function to save task information everytime it changes
+var saveTasks = function() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
 // Event listener that will callback the createTaskHandler function on a 'submit' can also be called 'onsubmit'. This event looks for either clicking a button named 'submit' or if the user hits the enter-key 
