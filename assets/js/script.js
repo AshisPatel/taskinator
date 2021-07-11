@@ -1,6 +1,7 @@
 // Using the 'El' suffix marks this as a DOM element 
 var formEl = document.querySelector("#task-form");
 var tasksToDoEl = document.querySelector("#tasks-to-do"); // Selects the element in the DOM that represents the unordered task list 
+var taskIdCounter = 0;  // Will create a unique ID for each task 
 
 // Handler function that creates a new task list-item
 
@@ -35,13 +36,58 @@ var taskFormHandler = function (event) {
 var createTaskEl = function(taskDataObj) {
     var taskItemEl = document.createElement("li"); // Dynamically creates a list item in the HTML 
     taskItemEl.className = "task-item"; // Dynamically adds style to list item
+    taskItemEl.setAttribute("data-task-id", taskIdCounter); // Assigns data-type attribute to list item 
     var taskInfoEl = document.createElement("div"); // Dynamically creates a div item in the HTML
     taskInfoEl.className = "task-info"; // Sets the class of the DIV to be 'task-info'
     taskInfoEl.innerHTML = "<h3 class='task-name'>" + taskDataObj.name + "</h3><span class='task-type'>" + taskDataObj.type + "</span>"; // Allows us to add actual HTML code to the newly created div
     taskItemEl.appendChild(taskInfoEl); // Adds the newly created div into a list item in the HTML 
+    // Call createTaskActions function to create the button/select that needs to be appended after the task text in the list item 
+    var taskActionsEl = createTaskActions(taskIdCounter); 
+    taskItemEl.appendChild(taskActionsEl); 
     tasksToDoEl.appendChild(taskItemEl); // Adds newly created task item list element to unordered list in the HTML
+    taskIDCounter++; // Incremenets counter to assure unique data-task-id for each list item
 }
 
+var createTaskActions = function(taskId) {
+    // Create div element to act as a container for the actions
+    var actionContainerEl = document.createElement("div");
+    actionContainerEl.className = "task-actions"; 
+
+    // Create action buttons and dropdown and append to div container
+    var editButtonEl = document.createElement("button");
+    editButtonEl.textContent = "Edit";  
+    editButtonEl.className = "btn edit-btn";
+    editButtonEl.setAttribute("data-task-id", taskId); 
+
+    actionContainerEl.appendChild(editButtonEl);
+
+    var deleteButtonEl = document.createElement("button");
+    deleteButtonEl.textContent = "Delete";
+    deleteButtonEl.className = "btn delete-btn";
+    deleteButtonEl.setAttribute("data-task-id", taskId);
+
+    actionContainerEl.appendChild(deleteButtonEl);
+
+    var statusSelectEl = document.createElement("select"); 
+    statusSelectEl.className = "select-status";
+    statusSelectEl.setAttribute("name", "status-change");
+    statusSelectEl.setAttribute("data-task-id", taskId);
+
+    // Create a for loop to implement the options in the select-menu
+    var statusChoices = ["To Do", "In Progress", "Complete"]; 
+    for (let index = 0; index < statusChoices.length; index++) { 
+        // Create option element  
+        var statusOptionEl = document.createElement("option");
+        statusOptionEl.textContent = statusChoices[index];
+        statusOptionEl.setAttribute("value",statusChoices[index]); 
+        // Append option element to select 
+        statusSelectEl.appendChild(statusOptionEl); 
+    }
+
+    actionContainerEl.appendChild(statusSelectEl); 
+
+    return actionContainerEl; 
+}
 
 
 // Event listener that will callback the createTaskHandler function on a 'submit' can also be called 'onsubmit'. This event looks for either clicking a button named 'submit' or if the user hits the enter-key 
