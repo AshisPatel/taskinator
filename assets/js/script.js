@@ -9,6 +9,17 @@ var taskFormHandler = function (event) {
     var taskNameInput = document.querySelector("input[name='task-name']").value; // Selects the value (which gets user set) of input element that has the name 'task-name'
     var taskTypeInput = document.querySelector("select[name='task-type']").value; // Selects the value 'select' element that has the name 'task-type'
 
+    // Validate if the input values have content
+    // If either field is 'empty' it will be read as 'false' and thus break out of the function via a return. 
+    if (!taskNameInput || !taskTypeInput ) {
+        alert("You need to fill out the task form before submitting!"); 
+        return;  
+    }
+
+    // Will clear the task form inputs after a submit 
+    // The .reset() method is for the form element as provided by the DOM element interface
+    formEl.reset(); 
+
     // Package the selected data as an object 
     var taskDataObj = {
         name: taskNameInput,
