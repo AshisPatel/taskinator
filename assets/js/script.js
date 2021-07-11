@@ -6,9 +6,14 @@ var tasksToDoEl = document.querySelector("#tasks-to-do"); // Selects the element
 
 var createTaskHandler = function () {
     event.preventDefault(); // Prevents the page from refreshing when this function is called 
+    var taskNameInput = document.querySelector("input[name='task-name']").value; // Selects the value (which gets user set) of input element that has the name 'task-name'
+    var taskTypeInput = document.querySelector("select[name='task-type']").value; // Selects the value 'select' element that has the name 'task-type'
     var taskItemEl = document.createElement("li"); // Dynamically creates a list item in the HTML 
     taskItemEl.className = "task-item"; // Dynamically adds style to list item
-    taskItemEl.textContent = "This is a new task!"; // Prompts user for task to add to list
+    var taskInfoEl = document.createElement("div"); // Dynamically creates a div item in the HTML
+    taskInfoEl.className = "task-info"; // Sets the class of the DIV to be 'task-info'
+    taskInfoEl.innerHTML = "<h3 class='task-name'>" + taskNameInput + "</h3><span class='task-type'>" + taskTypeInput + "</span>"; // Allows us to add actual HTML code to the newly created div
+    taskItemEl.appendChild(taskInfoEl); // Adds the newly created div into a list item in the HTML 
     tasksToDoEl.appendChild(taskItemEl); // Adds newly created task item list element to unordered list in the HTML
 }
 
