@@ -230,6 +230,53 @@ var saveTasks = function() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
+// Function to load tasks from the localStorage upon openning the website
+var loadTasks = function() {
+    // Grab tasks from localStorage
+    tasks = localStorage.getItem("tasks"); 
+    // Check to see if tasks is an empty array (no previously stored data)
+    if (!tasks) {
+        // Trying to add tasks to a null cannot be done, so we must set tasks to an empty array 
+        tasks = []; 
+        return false; // Will exit us from the function and not do the rest for no reason 
+    }
+    // Convert tasks from a string back into an array of objects
+    tasks = JSON.parse(tasks); 
+    // Iterate through tasks array to create tasks element on the page
+    for (i = 0; i < tasks.length; i++) {
+        taskIdCounter = tasks[i].id; 
+        // Process of recreating tasks from createTaskEl function 
+        var taskItemEl = document.createElement("li");
+        taskItemEl.className = "task-item";
+        taskItemEl.setAttribute("data-task-id", tasks[i].id);
+       
+        var taskInfoEl = document.createElement("div"); 
+        taskInfoEl.className = "task-info"; 
+        taskInfoEl.innerHTML = "<h3 class= 'task-name'" + tasks[i].name + "</h3><span class = 'task-type'>" + tasks[i].type + "</span>"; 
+
+        taskItemEl.appendChild(taskInfoEl); 
+
+        // Check to see which status column the list item needs to be appended too 
+        if (tasks[i].status === "to-do") {
+            // This will set the select-drop down in the div to 'to-do'
+            taskItemEl.querySelector("select[name='status-change']").selectedIndex = 0; 
+            tasksToDoEl.appendChild(taskItemEl);
+        }
+
+        else if (tasks[i].status === "in-progress") {
+            taskItemEl.querySelector("select[name='status-change']").selectedIndex = 1;
+            tasksInProgressEl.appendChild(taskItemEl);
+        }
+        else if (tasks[i].status === "complete") {
+            taskItemEl.querySelector("select[name='status-change']").selectedIndex = 2;
+            tasksCompletedEl.appendChild(taskItemEl); 
+        }
+        taskItemCounter++; 
+        console.log(taskItemEl); 
+        console.log(tasks); 
+    }
+}
+
 // Event listener that will callback the createTaskHandler function on a 'submit' can also be called 'onsubmit'. This event looks for either clicking a button named 'submit' or if the user hits the enter-key 
 formEl.addEventListener("submit", taskFormHandler);
 
